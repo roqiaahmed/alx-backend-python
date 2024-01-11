@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
+"""Define variables with type annotations."""
 
-# Add type annotations to the function below
+
 def to_str(n: float) -> str:
     """Returns the string representation of the float"""
     return str(n)

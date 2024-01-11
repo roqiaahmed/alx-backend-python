@@ -7,7 +7,7 @@ from typing import Tuple, List
 
 def zoom_array(lst: Tuple, factor: int = 2) -> List:
     """Augment the following code with the correct duck-typed annotations:"""
-    zoomed_in: Tuple = [i for item in lst for i in range(factor)]
+    zoomed_in: Tuple = [item for item in lst for i in range(factor)]
     return zoomed_in
 
 

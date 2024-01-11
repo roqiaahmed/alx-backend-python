@@ -1,28 +1,9 @@
-# # !/usr/bin/env python3
-
-# safe_first_element = __import__("100-safe_first_element").safe_first_element
-
-# print(safe_first_element.__annotations__)
-
-
-#########################################
-
-
-# #!/usr/bin/env python3
-
-# safely_get_value = __import__("101-safely_get_value").safely_get_value
-# annotations = safely_get_value.__annotations__
-
-# print("Here's what the mappings should look like")
-# for k, v in annotations.items():
-#     print(("{}: {}".format(k, v)))
-
-
-#########################################
-
-
 #!/usr/bin/env python3
 
-zoom_array = __import__("102-type_checking").zoom_array
+sum_list = __import__("5-sum_list").sum_list
 
-print(zoom_array.__annotations__)
+floats = [3.14, 1.11, 2.22]
+floats_sum = sum_list(floats)
+print(floats_sum == sum(floats))
+print(sum_list.__annotations__)
+print("sum_list(floats) returns {} which is a {}".format(floats_sum, type(floats_sum)))

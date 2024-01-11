@@ -2,7 +2,9 @@
 
 """Define variables with type annotations."""
 
+from typing import List
 
-def sum_list(list: list[float]) -> float:
+
+def sum_list(input_list: List[float]) -> float:
     """Returns the sum of a list of floats."""
-    return sum(list)
+    return sum(input_list)
