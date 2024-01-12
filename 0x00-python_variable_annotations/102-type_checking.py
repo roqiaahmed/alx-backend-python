@@ -2,7 +2,7 @@
 
 """Define variables with type annotations."""
 
-from typing import Tuple, List, reveal_type
+from typing import Tuple, List
 
 
 def zoom_array(lst: Tuple, factor: int = 2) -> List:
