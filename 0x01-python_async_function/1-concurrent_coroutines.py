@@ -8,9 +8,16 @@ import random
 wait_random = __import__("0-basic_async_syntax").wait_random
 
 
-async def wait_n(n: int, max_delay: int) -> list:
-    """Asynchronous coroutine that takes in an integer argument"""
+async def wait_n(n, max_delay):
     delays = []
+    tasks = []
+
     for i in range(n):
-        delays.append(await wait_random(max_delay))
+        task = asyncio.create_task(wait_random(max_delay))
+        tasks.append(task)
+
+    for task in tasks:
+        delay = await task
+        delays.append(delay)
+
     return sorted(delays)
