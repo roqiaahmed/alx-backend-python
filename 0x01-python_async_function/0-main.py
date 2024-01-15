@@ -2,8 +2,8 @@
 
 import asyncio
 
-wait_random = __import__("0-basic_async_syntax").wait_random
+task_wait_n = __import__("4-tasks").task_wait_n
 
-print(asyncio.run(wait_random()))
-print(asyncio.run(wait_random(5)))
-print(asyncio.run(wait_random(15)))
+n = 5
+max_delay = 6
+print(asyncio.run(task_wait_n(n, max_delay)))
