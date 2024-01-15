@@ -3,11 +3,11 @@
 import asyncio
 
 wait_random = __import__("0-basic_async_syntax").wait_random
-""" 1. Let's execute multiple coroutines at the same time with async """ ""
+""" 1. Let's execute multiple coroutines at the same time with async """
 
 
 async def task_wait_n(n, max_delay):
-    """Asynchronous coroutine that takes in an integer argument (max_delay,n)"""
+    """Asynchronous coroutine that takes in an integer argument"""
     delays = []
     for i in range(n):
         task = asyncio.create_task(wait_random(max_delay))

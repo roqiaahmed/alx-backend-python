@@ -6,7 +6,7 @@ wait_random = __import__("0-basic_async_syntax").wait_random
 
 
 async def wait_n(n, max_delay):
-    """Asynchronous coroutine that takes in an integer argument (max_delay,n)"""
+    """Asynchronous coroutine that takes in an integer argument"""
     delays = []
     for i in range(n):
         delay = await wait_random(max_delay)
