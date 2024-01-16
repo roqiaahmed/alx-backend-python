@@ -2,7 +2,8 @@
 
 """Async Generator"""
 
-import asyncio, random
+import asyncio
+import random
 from typing import Generator
 
 
