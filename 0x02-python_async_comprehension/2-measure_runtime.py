@@ -5,12 +5,12 @@
 import asyncio
 import time
 
-async_comp = __import__("1-async_comprehension").async_comprehension
+as_comp = __import__("1-async_comprehension").async_comprehension
 
 
 async def measure_runtime() -> float:
     """Async Comprehension"""
     start = time.time()
-    await asyncio.gather(async_comp(), async_comp(), async_comp(), async_comp())
+    await asyncio.gather(as_comp(), as_comp(), as_comp(), as_comp())
     end = time.time()
     return end - start
