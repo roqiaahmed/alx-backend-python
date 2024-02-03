@@ -5,9 +5,11 @@ Parameterize a unit test
 """
 import unittest
 from client import GithubOrgClient
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from unittest.mock import patch
 from unittest.mock import PropertyMock
+from parameterized import parameterized_class
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -76,3 +78,27 @@ class TestGithubOrgClient(unittest.TestCase):
         test_client = GithubOrgClient("test_url")
         test_license = test_client.has_license(repo, license_key)
         self.assertEqual(test_license, expacted)
+
+
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+    TestIntegrationGithubOrgClient class
+    """
+
+    @parameterized_class(
+        ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
+        TEST_PAYLOAD,
+    )
+    @classmethod
+    def setUpClass(cls):
+        """
+        setUpClass
+        """
+        cls.get_patcher = patch("requests.get", side_effect="HTTPError")
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        tearDownClass
+        """
+        cls.get_patcher.stop()
