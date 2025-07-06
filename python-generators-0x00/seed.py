@@ -4,7 +4,6 @@ import os
 
 import uuid
 import csv
-from decimal import Decimal
 from mysql import connector
 from dotenv import load_dotenv
 from contextlib import contextmanager
