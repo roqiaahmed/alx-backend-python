@@ -16,7 +16,7 @@ async def async_fetch_older_users():
         return await cur.fetchall()
 
 
-async def main():
+async def fetch_concurrently():
 
     users, older_users = await asyncio.gather(
         async_fetch_users(), async_fetch_older_users()
@@ -26,4 +26,4 @@ async def main():
     print(f"all users older than 40 ------------> \n {older_users}")
 
 
-asyncio.run(main())
+asyncio.run(fetch_concurrently())
