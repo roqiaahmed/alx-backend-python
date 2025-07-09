@@ -12,13 +12,12 @@ class ExecuteQuery:
         self.connection = sqlite3.connect("users.db")
         cursor = self.connection.cursor()
         cursor.execute(self.query, (self.age,))
-        result = cursor.fetchall()
-
-        return result
+        return cursor.fetchall()
 
     def __exit__(self, type, value, traceback):
         self.connection.close()
 
 
-with ExecuteQuery(25) as EX:
-    print(EX)
+with ExecuteQuery(25) as cursor:
+    for row in cursor:
+        print(row)
