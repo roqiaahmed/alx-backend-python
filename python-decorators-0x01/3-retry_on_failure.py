@@ -15,13 +15,11 @@ def retry_on_failure(retries=3, delay=2):
             last_exception = None
             for i in range(retries):
                 try:
-                    result = func(*args, **kwargs)
-                except sqlite3.DatabaseError as e:
+                    return func(*args, **kwargs)
+                except sqlite3.OperationalError as e:
                     time.sleep(delay)
                     last_exception = e
-            if result is None:
-                raise last_exception
-            return result
+            raise last_exception
 
         return wrapper
 
