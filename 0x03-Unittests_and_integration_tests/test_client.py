@@ -81,25 +81,24 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(test_license, expacted)
 
 
-# class TestIntegrationGithubOrgClient(unittest.TestCase):
-#     """
-#     TestIntegrationGithubOrgClient class
-#     """
+@parameterized_class(
+    ("org_payload", "repos_payload", "expected_repos", "apache2_repos"), TEST_PAYLOAD
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+    Integration test for GithubOrgClient
+    """
 
-#     @parameterized_class(
-#         ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
-#         TEST_PAYLOAD,
-#     )
-#     @classmethod
-#     def setUpClass(cls):
-#         """
-#         setUpClass
-#         """
-#         cls.get_patcher = patch("requests.get", side_effect="HTTPError")
+    @classmethod
+    def setUpClass(cls):
+        """
+        setup the data
+        """
+        cls.get_patcher = patch("requests.get", side_effect="HTTPError")
 
-#     @classmethod
-#     def tearDownClass(cls):
-#         """
-#         tearDownClass
-#         """
-#         cls.get_patcher.stop()
+    @classmethod
+    def tearDownClass(cls):
+        """
+        cleaning up
+        """
+        cls.get_patcher.stop()
