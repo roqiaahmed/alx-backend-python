@@ -25,4 +25,6 @@ class Message(models.Model):
     sent_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_created=True)
     sender = models.ForeignKey(User, on_delete=models.PROTECT)
-    conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    conversation_id = models.ForeignKey(
+        Conversation, on_delete=models.CASCADE, related_name="messages"
+    )
