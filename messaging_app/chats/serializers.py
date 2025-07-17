@@ -26,6 +26,14 @@ class MessageSerializer(serializers.ModelSerializer):
         return obj.message_body[:30]
 
     def validate(self, data):
+        """
+        data is the value of fields & when call is_valid() data be like:
+        {
+        "message_body": "hello world",
+        "sender": <User instance>,  -----> convert to model
+        "conversation": <Conversation instance> -----> convert to model
+        }
+        """
         if data["sender"] not in data["conversation"].participants.all():
             raise serializers.ValidationError(
                 "Sender must be part of the conversation."
@@ -39,4 +47,4 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Conversation
-        fields = ["participants", "messages"]
+        fields = ["conversation_id", "participants", "messages"]
