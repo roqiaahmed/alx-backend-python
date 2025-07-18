@@ -22,6 +22,10 @@ class Conversation(models.Model):
 class Message(models.Model):
     message_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     message_body = models.CharField(max_length=225)
+    status = models.CharField(
+        max_length=50, choices=[("sent", "Sent"), ("delivered", "Delivered")]
+    )
+    is_read = models.BooleanField(default=False)
     sent_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_created=True)
     sender = models.ForeignKey(User, on_delete=models.PROTECT)

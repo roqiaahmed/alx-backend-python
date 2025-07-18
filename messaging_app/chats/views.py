@@ -10,5 +10,26 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 
 class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
     serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        queryset = Message.objects.all()
+        status = self.request.query_params.get("status")
+        filters = self.request.query_params.get("filters")
+        conversation_pk = self.kwargs.get("conversation")
+
+        if conversation_pk:
+            queryset = queryset.filter(conversation=conversation_pk)
+
+        if status:
+            queryset = queryset.filter(status=status)
+
+        if filters == "unread":
+            queryset = queryset.filter(is_read=False)
+
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        conversation_pk = self.kwargs.get("conversation")
+        request.data["conversation"] = conversation_pk
+        return super().create(request, *args, **kwargs)

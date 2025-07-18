@@ -20,7 +20,15 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ("message_body", "message_id", "sender", "preview", "conversation")
+        fields = (
+            "message_id",
+            "message_body",
+            "preview",
+            "sender",
+            "conversation",
+            "is_read",
+            "status",
+        )
 
     def get_preview(self, obj):
         return obj.message_body[:30]
