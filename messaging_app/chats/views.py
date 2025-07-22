@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import ConversationSerializer, MessageSerializer, UserSerializer
 from .models import Conversation, Message, User
-from rest_framework.permissions import AllowAny
-from .permissions import IsParticipantOfConversation
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .permissions import IsParticipantOfConversation, IsParticipantInConversation
+from django.core.exceptions import PermissionDenied
 
 
 class RegisterView(APIView):
@@ -23,8 +24,12 @@ class RegisterView(APIView):
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
+
     serializer_class = ConversationSerializer
-    permission_classes = [IsParticipantOfConversation]
+    permission_classes = [
+        IsAuthenticated,
+        IsParticipantOfConversation,
+    ]
 
     def get_queryset(self):
         return Conversation.objects.filter(participants=self.request.user)
@@ -32,13 +37,19 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
-    permission_classes = [IsParticipantOfConversation]
+    permission_classes = [IsParticipantInConversation]
 
     def get_queryset(self):
-        conversation_id = self.kwargs.get("conversation_pk")
-        return Message.objects.filter(conversation_id=conversation_id)
+        conversation = self.get_conversation()
+        return Message.objects.filter(conversation_id=conversation)
 
     def perform_create(self, serializer):
-        conversation_id = self.kwargs.get("conversation_pk")
-        conversation = Conversation.objects.get(pk=conversation_id)
+        conversation = self.get_conversation()
         serializer.save(conversation_id=conversation, sender=self.request.user)
+
+    def get_conversation(self):
+        conversation_id = self.kwargs.get("conversation_pk")
+        conversation = get_object_or_404(Conversation, pk=conversation_id)
+        if self.request.user not in conversation.participants.all():
+            raise PermissionDenied("You are not allowed to access this conversation.")
+        return conversation
