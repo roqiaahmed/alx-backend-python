@@ -7,6 +7,8 @@ from .models import Conversation, Message, User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .permissions import IsParticipantOfConversation, IsParticipantInConversation
 from django.core.exceptions import PermissionDenied
+from .pagination import MessagesPagination
+from .filters import MessageFilter
 
 
 class RegisterView(APIView):
@@ -32,12 +34,16 @@ class ConversationViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self):
+        if not self.request.user.IsAuthenticated:
+            return Response("UnAuthenticated", status=status.HTTP_403_FORBIDDEN)
         return Conversation.objects.filter(participants=self.request.user)
 
 
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     permission_classes = [IsParticipantInConversation]
+    pagination_class = [MessagesPagination]
+    filterset_class = [MessageFilter]
 
     def get_queryset(self):
         conversation = self.get_conversation()
