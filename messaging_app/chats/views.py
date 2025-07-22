@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .serializers import ConversationSerializer, MessageSerializer, UserSerializer
 from .models import Conversation, Message, User
 from rest_framework.permissions import AllowAny
+from .permissions import IsParticipantOfConversation
 
 
 class RegisterView(APIView):
@@ -22,12 +23,16 @@ class RegisterView(APIView):
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
-    queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+    permission_classes = [IsParticipantOfConversation]
+
+    def get_queryset(self):
+        return Conversation.objects.filter(participants=self.request.user)
 
 
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
+    permission_classes = [IsParticipantOfConversation]
 
     def get_queryset(self):
         conversation_id = self.kwargs.get("conversation_pk")
