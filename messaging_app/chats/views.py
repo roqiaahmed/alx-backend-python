@@ -1,7 +1,24 @@
 from django.shortcuts import render
-from rest_framework import viewsets
-from .serializers import ConversationSerializer, MessageSerializer
-from .models import Conversation, Message
+from rest_framework import viewsets, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import ConversationSerializer, MessageSerializer, UserSerializer
+from .models import Conversation, Message, User
+from rest_framework.permissions import AllowAny
+
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "User registered successfully"},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -13,23 +30,10 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
-        queryset = Message.objects.all()
-        status = self.request.query_params.get("status")
-        filters = self.request.query_params.get("filters")
-        conversation_pk = self.kwargs.get("conversation")
+        conversation_id = self.kwargs.get("conversation_pk")
+        return Message.objects.filter(conversation_id=conversation_id)
 
-        if conversation_pk:
-            queryset = queryset.filter(conversation=conversation_pk)
-
-        if status:
-            queryset = queryset.filter(status=status)
-
-        if filters == "unread":
-            queryset = queryset.filter(is_read=False)
-
-        return queryset
-
-    def create(self, request, *args, **kwargs):
-        conversation_pk = self.kwargs.get("conversation")
-        request.data["conversation"] = conversation_pk
-        return super().create(request, *args, **kwargs)
+    def perform_create(self, serializer):
+        conversation_id = self.kwargs.get("conversation_pk")
+        conversation = Conversation.objects.get(pk=conversation_id)
+        serializer.save(conversation_id=conversation, sender=self.request.user)
