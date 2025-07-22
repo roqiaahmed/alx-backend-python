@@ -34,7 +34,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self):
-        if not self.request.user.IsAuthenticated:
+        if not self.request.user.is_authenticated:
             return Response("UnAuthenticated", status=status.HTTP_403_FORBIDDEN)
         return Conversation.objects.filter(participants=self.request.user)
 

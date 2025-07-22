@@ -1,4 +1,4 @@
-from rest_framework.pagination import pagination
+from rest_framework import pagination
 
 
 class MessagesPagination(pagination.PageNumberPagination):
