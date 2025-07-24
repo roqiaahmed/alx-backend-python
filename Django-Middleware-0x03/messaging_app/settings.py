@@ -113,7 +113,7 @@ LOGGING = {
         "file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
-            "filename": "debug.log",
+            "filename": "requests.log",
             "formatter": "verbose",
         },
     },
