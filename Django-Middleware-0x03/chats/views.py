@@ -42,8 +42,8 @@ class ConversationViewSet(viewsets.ModelViewSet):
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     permission_classes = [IsParticipantInConversation]
-    pagination_class = [MessagesPagination]
-    filterset_class = [MessageFilter]
+    pagination_class = MessagesPagination
+    filterset_class = MessageFilter
 
     def get_queryset(self):
         conversation = self.get_conversation()
