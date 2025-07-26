@@ -8,6 +8,11 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=25)
     email = models.CharField(max_length=225)
     phone_number = models.IntegerField()
+    role = models.CharField(
+        max_length=50,
+        choices=[("admin", "Admin"), ("moderator", "Moderator"), ("clint", "Clint")],
+        default="clint",
+    )
 
 
 class Conversation(models.Model):

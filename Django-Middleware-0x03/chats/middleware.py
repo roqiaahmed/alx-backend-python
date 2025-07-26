@@ -2,6 +2,7 @@ import logging
 from django.http import HttpResponseForbidden
 from datetime import datetime, timedelta
 from ipware import get_client_ip
+from django.urls import resolve
 
 
 class RequestLoggingMiddleware:
@@ -32,12 +33,15 @@ class RestrictAccessByTimeMiddleware:
 
 
 def is_path(request, view_name):
-    if hasattr(request, "resolver_match") and hasattr(request.resolver_match, "func"):
-        view_func = request.resolver_match
-        if hasattr(view_func, "view_name"):
-            if view_func.view_name.startswith(view_name):
-                return True
-    return False
+    resolver_match = resolve(request.path)
+    view_function = resolver_match.func  # For function-based views
+    view_class = (
+        resolver_match.func.view_class
+        if hasattr(resolver_match.func, "view_class")
+        else None
+    )
+    view_name = resolver_match.view_name
+    return view_name.startswith("conversation_messages")
 
 
 class OffensiveLanguageMiddleware:
@@ -80,3 +84,15 @@ class OffensiveLanguageMiddleware:
         #     ip = request.META.get("REMOTE_ADDR")
         ip = get_client_ip(request)
         return ip
+
+
+class RolepermissionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        role = request.user.role
+        if role not in ["admin", "moderator"]:
+            return HttpResponseForbidden("Only admin can acsses it")
+        return response
