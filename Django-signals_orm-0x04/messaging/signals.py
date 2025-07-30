@@ -42,4 +42,5 @@ def update_message(sender, instance, **kwargs):
 @receiver(post_delete, sender=User)
 def delete_user_related_data(sender, instance, **kwargs):
     Message.objects.filter(sender=instance).delete()
-    MessageHistory.objects.filter(edited_by=instance)
+    MessageHistory.objects.filter(edited_by=instance).delete()
+    Notification.objects.filter(receiver=instance).delete()

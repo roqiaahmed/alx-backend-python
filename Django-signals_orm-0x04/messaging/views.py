@@ -1,10 +1,11 @@
-from django.shortcuts import render
 from django.http import HttpResponse
-from .models import User
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def delete_user(request):
     if request.method == "DELETE":
-        curr_user = request.user
-        if curr_user:
-            User.objects.delete(pk=curr_user.id)
+        user = request.user
+        if user:
+            user.delete()
+    return HttpResponse(status=200)
