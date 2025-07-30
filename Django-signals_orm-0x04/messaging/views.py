@@ -9,10 +9,10 @@ from rest_framework.response import Response
 @login_required
 def delete_user(request):
     if request.method == "DELETE":
-        user = request.user
-        if user:
-            user.delete()
-    return HttpResponse(status=200)
+        sender = request.user
+        if sender:
+            sender.delete()
+        return HttpResponse(status=200)
 
 
 class MessageView(viewsets.ModelViewSet):
@@ -31,6 +31,14 @@ class MessageView(viewsets.ModelViewSet):
         message = self.get_object()
         thread = get_thread(message)
         return Response(thread)
+
+    @action(detail=False, methods=["get"], url_path="unread")
+    def unread_inbox(self, request):
+        user = request.user
+        unread_messages = Message.unread.unread_for_user(user).only(
+            "id", "content", "timestamp"
+        )
+        return Response(unread_messages.values("id", "content", "timestamp"))
 
 
 def get_thread(message):

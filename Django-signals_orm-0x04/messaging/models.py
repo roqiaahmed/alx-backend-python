@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from .managers import UnreadMessagesManager
 
 
 class User(AbstractUser):
@@ -17,7 +18,9 @@ class Message(models.Model):
     parent_message = models.ForeignKey(
         "self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
     )
+    is_read = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+    unread = UnreadMessagesManager()
 
 
 class Notification(models.Model):
