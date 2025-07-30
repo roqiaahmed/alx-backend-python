@@ -1,6 +1,6 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save
-from .models import Message, Notification, MessageHistory
+from django.db.models.signals import post_save, pre_save, post_delete
+from .models import Message, Notification, MessageHistory, User
 
 
 @receiver(post_save, sender=Message)
@@ -37,3 +37,9 @@ def update_message(sender, instance, **kwargs):
         messages_H = MessageHistory.objects.filter(message=instance)
         for old_message in messages_H:
             print(old_message.old_messages)
+
+
+@receiver(post_delete, sender=User)
+def delete_user_related_data(sender, instance, **kwargs):
+    Message.objects.filter(sender=instance).delete()
+    MessageHistory.objects.filter(edited_by=instance)

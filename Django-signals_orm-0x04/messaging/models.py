@@ -22,8 +22,8 @@ class Notification(models.Model):
         choices=[("read", "READ"), ("unread", "UNREAD")], default="unread"
     )
     notification_message = models.CharField(max_length=225)
-    message = models.ForeignKey(Message)
-    receiver = models.ForeignKey(User)
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class MessageHistory(models.Model):
