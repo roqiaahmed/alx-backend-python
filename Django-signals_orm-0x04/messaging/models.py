@@ -14,6 +14,9 @@ class Message(models.Model):
     receiver = models.ManyToManyField(User)
     content = models.TextField(null=False)
     edited = models.BooleanField(default=False)
+    parent_message = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
 
 
