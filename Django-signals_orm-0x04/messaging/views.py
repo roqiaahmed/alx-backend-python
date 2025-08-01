@@ -2,8 +2,11 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from rest_framework import viewsets
 from .models import Message
+from django.db import models
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 
 @login_required
@@ -18,12 +21,22 @@ def delete_user(request):
 class MessageView(viewsets.ModelViewSet):
 
     def get_queryset(self):
-        message_id = self.kwargs.get("message_pk")
         return (
-            Message.objects.filter(pk=message_id)
-            .select_related("sender", "parent_message")
+            Message.objects.select_related("sender", "parent_message")
             .prefetch_related("receiver", "replies")
+            .filter(
+                models.Q(sender=self.request.user)
+                | models.Q(receiver=self.request.user)
+            )
         )
+
+    @method_decorator(cache_page(60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @method_decorator(cache_page(60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     # GET /messages/1/thread/
     @action(detail=True, methods=["get"])
@@ -32,7 +45,10 @@ class MessageView(viewsets.ModelViewSet):
         thread = get_thread(message)
         return Response(thread)
 
-    @action(detail=False, methods=["get"], url_path="unread")
+    # GET /messages/unread/
+    @action(
+        detail=False, methods=["get"], url_path="unread"
+    )  # detail=False becouse it will return list not a singel value
     def unread_inbox(self, request):
         user = request.user
         unread_messages = Message.unread.unread_for_user(user).only(
