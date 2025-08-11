@@ -9,3 +9,4 @@ drf-nested-routers==0.94.2
 PyJWT==2.9.0
 python-ipware==3.0.0
 sqlparse==0.5.3
+mysqlclient
