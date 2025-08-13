@@ -1,6 +1,8 @@
 #!/bin/bash
 
-kubectl scale --replicas=3 deployment/messaging-app
+kubectl scale deployment messaging-app --replicas=3 
+
+kubectl get pods
 
 kubectl top pods
 
