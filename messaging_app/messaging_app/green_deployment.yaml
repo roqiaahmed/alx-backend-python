@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-green
+  labels:
+    app: messaging-app
+    version: green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: messaging
+      version: green
+  template:
+    metadata:
+      labels:
+        app: messaging
+        version: green
+    spec:
+      containers:
+        - name: web-messaging-app
+          image: messaging-app-image:green
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secret
+                  key: DJANGO_SECRET_KEY
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secret
+                  key: MYSQL_DATABASE
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secret
+                  key: MYSQL_USER
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secret
+                  key: MYSQL_PASSWORD
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secret
+                  key: DATABASE_HOST
+            - name: DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secret
+                  key: DATABASE_PORT
+          ports:
+            - containerPort: 8000

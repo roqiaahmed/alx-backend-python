@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Apply blue deployment and service (start routing to blue)
+kubectl apply -f messaging_app/blue_deployment.yaml
+kubectl apply -f messaging_app/kubeservice.yaml
