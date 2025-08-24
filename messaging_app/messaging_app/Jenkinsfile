@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                sh '''
+                git clone https://github.com/roqiaahmed/alx-backend-python.git
+                cd alx-backend-python/messaging_app
+                pip install -r requirements.txt
+                '''
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+                sh '''
+                cd alx-backend-python/messaging_app
+                pytest
+                '''
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+}

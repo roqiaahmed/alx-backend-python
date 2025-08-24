@@ -10,3 +10,5 @@ PyJWT==2.9.0
 python-ipware==3.0.0
 sqlparse==0.5.3
 mysqlclient
+pytest==8.4.1
+pytest-django==4.11.1
