@@ -1,6 +1,18 @@
 pipeline {
-    agent {
-        docker { image 'python:3' }
+    agent any
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKER_IMAGE = "roqiaahmed447141/messaging_app"
+        DJANGO_SECRET_KEY = credentials('django-secret-key')
+        MYSQL_DB = credentials('MYSQL_DB')
+        DATABASE_USERNAME = credentials('DATABASE_USERNAME')
+        DATABASE_PASSWORD = credentials('DATABASE_PASSWORD')
+        DATABASE_ROOT_PASSWORD = credentials('DATABASE_ROOT_PASSWORD')
+        DATABASE_ENGINE = credentials('DATABASE_ENGINE')
+        DATABASE_HOST = credentials('DATABASE_HOST')
+        DATABASE_PORT = credentials('DATABASE_PORT')
+        
+        
     }
     stages {
         stage('Checkout') {
@@ -10,11 +22,7 @@ pipeline {
                     url: 'https://github.com/roqiaahmed/alx-backend-python.git'
             }
         }
-        stage('Test') {
-            steps {
-                sh 'pip --version'
-            }
-        }
+        
         stage('Build') {
             steps {
                 echo 'Building..'
@@ -24,6 +32,7 @@ pipeline {
                 '''
             }
         }
+        
         stage('Test') {
             steps {
                 echo 'Testing..'
@@ -33,9 +42,21 @@ pipeline {
                 '''
             }
         }
-        stage('Deploy') {
+        
+        stage('Build Docker Image') {
             steps {
-                echo 'Deploying....'
+                script {
+                    sh "docker build -t $DOCKER_IMAGE:latest -f messaging_app/Dockerfile ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    sh "echo $DOCKER_HUB_CREDENTIALS | docker login -u roqiaahmed447141 --password-stdin"
+                    sh "docker push $DOCKER_IMAGE:latest"
+                }
             }
         }
     }
