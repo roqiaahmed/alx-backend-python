@@ -1,11 +1,18 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'python:3' }
+    }
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main',
                     credentialsId: 'github-credentials',
                     url: 'https://github.com/roqiaahmed/alx-backend-python.git'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'pip --version'
             }
         }
         stage('Build') {
